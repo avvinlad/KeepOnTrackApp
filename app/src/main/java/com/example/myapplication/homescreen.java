@@ -28,6 +28,7 @@ public class homescreen extends AppCompatActivity {
     TextView emailTV;
     TextView idTV;
     ImageView photoIV;
+    ImageView settingsButton;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -35,20 +36,21 @@ public class homescreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreen);
 
-        sign_out = findViewById(R.id.log_out);
+//        sign_out = findViewById(R.id.log_out);
         nameTV = findViewById(R.id.name);
+        settingsButton = findViewById(R.id.settings);
 //        emailTV = findViewById(R.id.email);
 //        idTV = findViewById(R.id.id);
         //photoIV = findViewById(R.id.photo);
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
+//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestEmail()
+//                .build();
 
         // Build a GoogleSignInClient with the options specified by gso.
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+//        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(homescreen.this);
         if (acct != null) {
@@ -67,23 +69,35 @@ public class homescreen extends AppCompatActivity {
             Glide.with(this).load(personPhoto).into(img);
         }
 
-        sign_out.setOnClickListener(new View.OnClickListener() {
+//        sign_out.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                signOut();
+//            }
+//        });
+
+        settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                signOut();
+            public void onClick(View view){
+                //settings_page();
+
+                startActivity(new Intent(homescreen.this,Settings.class));
             }
         });
+
+
     }
 
-    private void signOut() {
-        mGoogleSignInClient.signOut()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete( Task<Void> task) {
-                        Toast.makeText(homescreen.this,"Successfully signed out",Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(homescreen.this, MainActivity.class));
-                        finish();
-                    }
-                });
-    }
+//    private void signOut() {
+//        mGoogleSignInClient.signOut()
+//                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete( Task<Void> task) {
+//                        Toast.makeText(homescreen.this,"Successfully signed out",Toast.LENGTH_SHORT).show();
+//                        startActivity(new Intent(homescreen.this, MainActivity.class));
+//                        finish();
+//                    }
+//                });
+//    }
+
 }
