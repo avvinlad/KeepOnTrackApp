@@ -1,4 +1,5 @@
 package com.example.myapplication;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 //import android.support.annotation.NonNull;
@@ -22,12 +23,13 @@ import com.google.android.gms.tasks.Task;
 public class homescreen extends AppCompatActivity {
 
     GoogleSignInClient mGoogleSignInClient;
-    Button sign_out;
+    ImageView sign_out;
     TextView nameTV;
     TextView emailTV;
     TextView idTV;
     ImageView photoIV;
 
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,8 +37,8 @@ public class homescreen extends AppCompatActivity {
 
         sign_out = findViewById(R.id.log_out);
         nameTV = findViewById(R.id.name);
-        emailTV = findViewById(R.id.email);
-        idTV = findViewById(R.id.id);
+//        emailTV = findViewById(R.id.email);
+//        idTV = findViewById(R.id.id);
         //photoIV = findViewById(R.id.photo);
 
         // Configure sign-in to request the user's ID, email address, and basic
@@ -59,9 +61,9 @@ public class homescreen extends AppCompatActivity {
             ImageView img = (ImageView)findViewById(R.id.photo);
 
             // test
-            nameTV.setText("Name: "+personName);
-            emailTV.setText("Email: "+personEmail);
-            idTV.setText("ID: "+personId);
+            nameTV.setText(personName.toUpperCase());
+//            emailTV.setText("Email: "+personEmail);
+//            idTV.setText("ID: "+personId);
             Glide.with(this).load(personPhoto).into(img);
         }
 
