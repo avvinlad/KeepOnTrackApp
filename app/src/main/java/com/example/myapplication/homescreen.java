@@ -58,7 +58,7 @@ public class homescreen extends AppCompatActivity {
             Uri personPhoto = acct.getPhotoUrl();
             ImageView img = (ImageView)findViewById(R.id.photo);
 
-
+            // test
             nameTV.setText("Name: "+personName);
             emailTV.setText("Email: "+personEmail);
             idTV.setText("ID: "+personId);
