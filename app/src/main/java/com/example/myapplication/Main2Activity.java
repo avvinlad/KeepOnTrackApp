@@ -1,5 +1,6 @@
 package com.example.myapplication;
 import android.content.Intent;
+import android.media.Image;
 import android.net.Uri;
 //import android.support.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -59,11 +60,13 @@ public class Main2Activity extends AppCompatActivity {
             String personEmail = acct.getEmail();
             String personId = acct.getId();
             Uri personPhoto = acct.getPhotoUrl();
+            ImageView img = (ImageView)findViewById(R.id.photo);
+
 
             nameTV.setText("Name: "+personName);
             emailTV.setText("Email: "+personEmail);
             idTV.setText("ID: "+personId);
-            //Glide.with(this).load(personPhoto).into(photoIV);
+            Glide.with(this).load(personPhoto).into(img);
         }
 
         sign_out.setOnClickListener(new View.OnClickListener() {
