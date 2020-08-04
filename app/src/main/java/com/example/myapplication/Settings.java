@@ -70,7 +70,6 @@ public class Settings extends AppCompatActivity{
     }
     private void goBack() {
         startActivity(new Intent(Settings.this,homescreen.class));
-
     }
 
 }

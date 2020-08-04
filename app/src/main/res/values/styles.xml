@@ -9,4 +9,8 @@
         <item name="android:statusBarColor">@color/colorPrimaryLight</item>
     </style>
 
+    <style name="AppTheme.HabitModal">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
 </resources>
