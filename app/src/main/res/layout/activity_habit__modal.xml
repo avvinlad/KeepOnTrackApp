@@ -63,7 +63,7 @@
         android:ems="6"
         android:textAlignment="center"
         android:inputType="textLongMessage"
-        android:text="Enter Date"
+        android:text="MM/DD/YYYY"
         android:layout_marginBottom="10dp"
         android:layout_below="@+id/date_text"
         android:layout_centerHorizontal="true"/>

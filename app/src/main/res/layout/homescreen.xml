@@ -60,19 +60,20 @@
         android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"/>
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/addHabit"
-        android:layout_below="@+id/profile">
+        android:layout_below="@+id/profile"
+        android:background="@color/colorPrimaryLightAccent">
 
         <ListView
             android:id="@+id/habitList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             />
-    </ScrollView>
+    </LinearLayout>
 
 
     <ImageButton
@@ -84,6 +85,32 @@
         android:src="@drawable/ic_baseline_add_circle_24"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/bottom_nav"
+        android:layout_marginBottom="5dp"/>
+
+    <ImageButton
+        android:id="@+id/refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Refresh"
+        android:background="@color/colorPrimaryLight"
+        android:src="@drawable/ic_baseline_refresh_24"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/bottom_nav"
+        android:layout_toRightOf="@+id/addHabit"
+        android:layout_marginLeft="50dp"
+        android:layout_marginBottom="5dp"/>
+
+    <ImageButton
+        android:id="@+id/delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Refresh"
+        android:background="@color/colorPrimaryLight"
+        android:src="@drawable/ic_baseline_delete_24"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/bottom_nav"
+        android:layout_toLeftOf="@+id/addHabit"
+        android:layout_marginRight="50dp"
         android:layout_marginBottom="5dp"/>
 
 

@@ -6,31 +6,40 @@ import android.net.Uri;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class homescreen extends AppCompatActivity {
 
-    GoogleSignInClient mGoogleSignInClient;
-    ImageView sign_out;
     TextView nameTV;
-    TextView emailTV;
-    TextView idTV;
-    ImageView photoIV;
-    ImageView settingsButton;
-    ImageButton addHabit;
+    ImageView settingsButton, addHabit, refresh;
+    ListView habitList;
+    ArrayList<String> allHabits = new ArrayList<>();
+    ArrayList<Habit> habits = new ArrayList<>();
+    ArrayList<String> habitListView = new ArrayList<>();
+    ArrayAdapter arrayAdapter;
+    String[] habits_split;
+    String habitsQuery;
+    Habit selectedHabit;
+    GoogleSignInAccount acct;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -41,8 +50,10 @@ public class homescreen extends AppCompatActivity {
         nameTV = findViewById(R.id.name);
         settingsButton = findViewById(R.id.settings);
         addHabit = findViewById(R.id.addHabit);
+        refresh = findViewById(R.id.refresh);
 
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(homescreen.this);
+
+        acct = GoogleSignIn.getLastSignedInAccount(homescreen.this);
         if (acct != null) {
             String personName = acct.getDisplayName();
             Uri personPhoto = acct.getPhotoUrl();
@@ -60,7 +71,6 @@ public class homescreen extends AppCompatActivity {
             }
         });
 
-
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
@@ -69,6 +79,116 @@ public class homescreen extends AppCompatActivity {
             }
         });
 
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view){
+                selectedHabit = null;
+                allHabits.clear();
+                habits.clear();
+                habitListView.clear();
+                refreshData();
+            }
+        });
+
+        retrieveData();
+        addHabits();
+
+        itemPressed();
+    }
+
+    private void itemPressed(){
+        final Handler handler = new Handler();
+        final int delay = 1000; //milliseconds
+
+        handler.postDelayed(new Runnable(){
+            public void run(){
+                if(!habitListView.isEmpty()) {
+                    habitList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            String title = habitListView.get(i);
+                            Log.w("Database", "Selected title: " + title);
+                            for (Habit habit: habits){
+                                if (habit.getTitle().equals(title)){
+                                    break;
+                                }
+                            }
+                        }
+                    });
+                }
+                else
+                    handler.postDelayed(this, delay);
+            }
+        }, delay);
+    }
+
+    private void retrieveData(){
+        final String account = acct.getId();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("habits");
+
+        // Read from the database
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                habitsQuery = dataSnapshot.child(account).getValue().toString();
+                habits_split = habitsQuery.split("[\\n\\t\\r,{}]");
+                for (String val: habits_split){
+                    String hasEqual = val;
+                    if (hasEqual.indexOf("=") != -1){
+                        val = hasEqual.substring(val.indexOf("=")+1);
+                    }
+                    if (!val.equals("")){ allHabits.add(val); }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("Database", "Failed to read value.", error.toException());
+            }
+        });
+    }
+
+    private void addHabits(){
+        final Handler handler = new Handler();
+        final int delay = 1000; //milliseconds
+
+        handler.postDelayed(new Runnable(){
+            public void run(){
+                if(!allHabits.isEmpty()) {
+                    for (String habit: allHabits){
+                        String[] values = habit.split("[; ]");
+                        Log.w("Database", values[0] + " " + values[1] + " " + values[2]);
+                        if (!(values[1].equals("null")) && !(values[2].equals("MM/DD/YYYY"))){ habits.add(new Habit(values[0], values[1], values[2])); }
+                        else if ((values[1].equals("null")) && !(values[2].equals("MM/DD/YYYY"))){ habits.add(new Habit(values[0], "", values[2])); }
+                        else if (!(values[1].equals("null")) && (values[2].equals("MM/DD/YYYY"))){ habits.add(new Habit(values[0], values[1], "")); }
+                        else if ((values[1].equals("null")) && (values[2].equals("MM/DD/YYYY"))){ habits.add(new Habit(values[0], "", "")); }
+                    }
+                    habitList = (ListView) findViewById(R.id.habitList);
+                    printToList();
+                }
+                else
+                    handler.postDelayed(this, delay);
+            }
+        }, delay);
+    }
+
+
+    private void refreshData(){
+        retrieveData();
+        addHabits();
+    }
+
+    private void printToList(){
+        for(Habit curHabit: habits){
+            habitListView.add(curHabit.getTitle());
+        }
+        for (String title: habitListView){
+            Log.w("Database", title);
+        }
+        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, habitListView);
+        habitList.setAdapter(arrayAdapter);
     }
 
 }
