@@ -37,7 +37,7 @@ public class homescreen extends AppCompatActivity {
     ArrayList<String> habitListView = new ArrayList<>();
     ArrayAdapter arrayAdapter;
     String[] habits_split;
-    String habitsQuery;
+    Object habitsQuery;
     Habit selectedHabit;
     GoogleSignInAccount acct;
 
@@ -130,14 +130,18 @@ public class homescreen extends AppCompatActivity {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                habitsQuery = dataSnapshot.child(account).getValue().toString();
-                habits_split = habitsQuery.split("[\\n\\t\\r,{}]");
-                for (String val: habits_split){
-                    String hasEqual = val;
-                    if (hasEqual.indexOf("=") != -1){
-                        val = hasEqual.substring(val.indexOf("=")+1);
+                habitsQuery = dataSnapshot.child(account).getValue();
+                if (habitsQuery != null) {
+                    habits_split = habitsQuery.toString().split("[\\n\\t\\r,{}]");
+                    for (String val : habits_split) {
+                        String hasEqual = val;
+                        if (hasEqual.indexOf("=") != -1) {
+                            val = hasEqual.substring(val.indexOf("=") + 1);
+                        }
+                        if (!val.equals("")) {
+                            allHabits.add(val);
+                        }
                     }
-                    if (!val.equals("")){ allHabits.add(val); }
                 }
             }
 
