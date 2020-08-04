@@ -107,7 +107,6 @@ public class homescreen extends AppCompatActivity {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                             String title = habitListView.get(i);
-                            Log.w("Database", "Selected title: " + title);
                             for (Habit habit: habits){
                                 if (habit.getTitle().equals(title)){
                                     break;
@@ -159,7 +158,6 @@ public class homescreen extends AppCompatActivity {
                 if(!allHabits.isEmpty()) {
                     for (String habit: allHabits){
                         String[] values = habit.split("[; ]");
-                        Log.w("Database", values[0] + " " + values[1] + " " + values[2]);
                         if (!(values[1].equals("null")) && !(values[2].equals("MM/DD/YYYY"))){ habits.add(new Habit(values[0], values[1], values[2])); }
                         else if ((values[1].equals("null")) && !(values[2].equals("MM/DD/YYYY"))){ habits.add(new Habit(values[0], "", values[2])); }
                         else if (!(values[1].equals("null")) && (values[2].equals("MM/DD/YYYY"))){ habits.add(new Habit(values[0], values[1], "")); }
@@ -183,9 +181,6 @@ public class homescreen extends AppCompatActivity {
     private void printToList(){
         for(Habit curHabit: habits){
             habitListView.add(curHabit.getTitle());
-        }
-        for (String title: habitListView){
-            Log.w("Database", title);
         }
         arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, habitListView);
         habitList.setAdapter(arrayAdapter);
