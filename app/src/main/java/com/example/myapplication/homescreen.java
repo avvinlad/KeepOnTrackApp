@@ -161,7 +161,7 @@ public class homescreen extends AppCompatActivity {
             public void run(){
                 if(!allHabits.isEmpty()) {
                     for (String habit: allHabits){
-                        String[] values = habit.split("[; ]");
+                        String[] values = habit.split("[;]");
                         if (!(values[1].equals("null")) && !(values[2].equals("MM/DD/YYYY"))){ habits.add(new Habit(values[0], values[1], values[2])); }
                         else if ((values[1].equals("null")) && !(values[2].equals("MM/DD/YYYY"))){ habits.add(new Habit(values[0], "", values[2])); }
                         else if (!(values[1].equals("null")) && (values[2].equals("MM/DD/YYYY"))){ habits.add(new Habit(values[0], values[1], "")); }
@@ -178,13 +178,27 @@ public class homescreen extends AppCompatActivity {
 
 
     private void refreshData(){
-        retrieveData();
-        addHabits();
+        final Handler handler = new Handler();
+        final int delay = 1000; //milliseconds
+
+        handler.postDelayed(new Runnable(){
+            public void run(){
+                if(allHabits.isEmpty()) {
+                    retrieveData();
+                    addHabits();
+                    Toast.makeText(homescreen.this, "Refreshed Data", Toast.LENGTH_SHORT).show();
+                }
+                else
+                    handler.postDelayed(this, delay);
+            }
+        }, delay);
+
     }
 
     private void printToList(){
         for(Habit curHabit: habits){
             habitListView.add(curHabit.getTitle());
+            Log.w("Habit", curHabit.getTitle() + " " + curHabit.getDesc() + " " + curHabit.getReminder());
         }
         arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, habitListView);
         habitList.setAdapter(arrayAdapter);
