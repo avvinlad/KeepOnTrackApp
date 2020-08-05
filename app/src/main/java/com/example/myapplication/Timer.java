@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 //import android.support.v7.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +27,8 @@ public class Timer extends AppCompatActivity {
     private long mStartTimeInMillis;
     private long mTimeLeftInMillis;
     private long mEndTime;
+    private MediaPlayer timerSound;
+
     ImageButton back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,9 @@ public class Timer extends AppCompatActivity {
         mButtonStartPause = findViewById(R.id.button_start_pause);
         mButtonReset = findViewById(R.id.button_reset);
         back = findViewById(R.id.back_timer);
+        timerSound = MediaPlayer.create(this, R.raw.timer_android_oreo);
+
+
         mButtonSet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,6 +102,7 @@ public class Timer extends AppCompatActivity {
             @Override
             public void onFinish() {
                 mTimerRunning = false;
+                timerSound.start();
                 updateWatchInterface();
             }
         }.start();
