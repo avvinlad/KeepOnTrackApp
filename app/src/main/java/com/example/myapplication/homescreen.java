@@ -84,7 +84,6 @@ public class homescreen extends AppCompatActivity {
         timerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
-
                 startActivity(new Intent(homescreen.this,Timer.class));
             }
         });
@@ -100,7 +99,6 @@ public class homescreen extends AppCompatActivity {
             }
         });
 
-
         retrieveData();
         addHabits();
         final Handler handler = new Handler();
@@ -110,6 +108,7 @@ public class homescreen extends AppCompatActivity {
             public void run(){
                 if(!(allHabits.isEmpty())) {
                     itemPressed();
+                    refreshData();
                 }
                 else
                     handler.postDelayed(this, delay);
@@ -117,7 +116,7 @@ public class homescreen extends AppCompatActivity {
         }, delay);
     }
 
-        private void itemPressed(){
+    private void itemPressed(){
         final Handler handler = new Handler();
         final int delay = 1000; //milliseconds
 
@@ -131,7 +130,9 @@ public class homescreen extends AppCompatActivity {
                             for (Habit habit: habits){
                                 if (habit.getTitle().equals(title)){
                                     deleteHabit(habit.getTitle());
-                                    refreshData();
+                                    Intent intent = getIntent();
+                                    finish();
+                                    startActivity(intent);
                                 }
                             }
                         }
@@ -184,7 +185,8 @@ public class homescreen extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 snapshot.child(account).child(title).getRef().removeValue();
-                Toast.makeText(homescreen.this, "Deleted", Toast.LENGTH_SHORT).show();
+                allHabits.clear();
+                Toast.makeText(homescreen.this, "Completed", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -219,6 +221,7 @@ public class homescreen extends AppCompatActivity {
 
 
     private void refreshData(){
+
         final Handler handler = new Handler();
         final int delay = 1000; //milliseconds
 
@@ -233,7 +236,6 @@ public class homescreen extends AppCompatActivity {
                     handler.postDelayed(this, delay);
             }
         }, delay);
-
     }
 
     private void printToList(){

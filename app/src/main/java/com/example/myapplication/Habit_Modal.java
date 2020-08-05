@@ -112,6 +112,7 @@ public class Habit_Modal extends Activity {
                         String value = titleString + ";" + descString + ";" + dateString;
                         addToDatabase(account, value, titleString);
                         finish();
+                        startActivity(new Intent(Habit_Modal.this, homescreen.class));
                     }
                 }
                 else{
