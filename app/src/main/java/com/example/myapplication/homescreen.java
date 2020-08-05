@@ -3,6 +3,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 //import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -38,7 +39,7 @@ public class homescreen extends AppCompatActivity {
     ArrayAdapter arrayAdapter;
     String[] habits_split;
     Object habitsQuery;
-    Habit selectedHabit;
+    static Habit selectedHabit;
     GoogleSignInAccount acct;
 
     @SuppressLint("WrongViewCast")
@@ -90,10 +91,21 @@ public class homescreen extends AppCompatActivity {
             }
         });
 
+
         retrieveData();
         addHabits();
+        final Handler handler = new Handler();
+        final int delay = 1000; //milliseconds
 
-        itemPressed();
+        handler.postDelayed(new Runnable(){
+            public void run(){
+                if(!(allHabits.isEmpty())) {
+                    itemPressed();
+                }
+                else
+                    handler.postDelayed(this, delay);
+            }
+        }, delay);
     }
 
     private void itemPressed(){
@@ -109,7 +121,8 @@ public class homescreen extends AppCompatActivity {
                             String title = habitListView.get(i);
                             for (Habit habit: habits){
                                 if (habit.getTitle().equals(title)){
-                                    break;
+                                    deleteHabit(habit.getTitle());
+                                    refreshData();
                                 }
                             }
                         }
@@ -149,6 +162,25 @@ public class homescreen extends AppCompatActivity {
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
                 Log.w("Database", "Failed to read value.", error.toException());
+            }
+        });
+    }
+
+    private void deleteHabit(final String title){
+        final String account = acct.getId();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("habits");
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                snapshot.child(account).child(title).getRef().removeValue();
+                Toast.makeText(homescreen.this, "Deleted", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }
@@ -198,7 +230,6 @@ public class homescreen extends AppCompatActivity {
     private void printToList(){
         for(Habit curHabit: habits){
             habitListView.add(curHabit.getTitle());
-            Log.w("Habit", curHabit.getTitle() + " " + curHabit.getDesc() + " " + curHabit.getReminder());
         }
         arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, habitListView);
         habitList.setAdapter(arrayAdapter);
