@@ -21,6 +21,7 @@
         <activity android:name=".homescreen"></activity>
         <activity android:name=".Settings"></activity>
         <activity android:name=".Habit_Modal" android:theme="@style/AppTheme.HabitModal"></activity>
+        <activity android:name=".Timer"></activity>
     </application>
 
 </manifest>

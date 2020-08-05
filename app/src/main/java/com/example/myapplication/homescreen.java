@@ -31,7 +31,7 @@ import java.util.ArrayList;
 public class homescreen extends AppCompatActivity {
 
     TextView nameTV;
-    ImageView settingsButton, addHabit, refresh;
+    ImageView settingsButton, addHabit, refresh,timerButton;
     ListView habitList;
     ArrayList<String> allHabits = new ArrayList<>();
     ArrayList<Habit> habits = new ArrayList<>();
@@ -52,6 +52,8 @@ public class homescreen extends AppCompatActivity {
         settingsButton = findViewById(R.id.settings);
         addHabit = findViewById(R.id.addHabit);
         refresh = findViewById(R.id.refresh);
+        timerButton = findViewById(R.id.time);
+
 
 
         acct = GoogleSignIn.getLastSignedInAccount(homescreen.this);
@@ -77,6 +79,13 @@ public class homescreen extends AppCompatActivity {
             public void onClick(View view){
                 //settings_page();
                 startActivity(new Intent(homescreen.this,Settings.class));
+            }
+        });
+        timerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view){
+
+                startActivity(new Intent(homescreen.this,Timer.class));
             }
         });
 
@@ -108,7 +117,7 @@ public class homescreen extends AppCompatActivity {
         }, delay);
     }
 
-    private void itemPressed(){
+        private void itemPressed(){
         final Handler handler = new Handler();
         final int delay = 1000; //milliseconds
 
